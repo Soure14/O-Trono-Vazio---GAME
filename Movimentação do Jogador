@@ -1,0 +1,67 @@
+// Evento Create do jogador
+// Inicializa as variáveis para controlar estado e direção
+action = "Idle"; // Estado inicial (parado)
+face = "D"; // Direção inicial (para baixo)
+speed = 2; // Velocidade de movimento
+
+// Cria a câmera se ela ainda não existir
+if (!instance_exists(Obj_camera)) {
+    instance_create_layer(x, y, "Instances", Obj_camera);
+}
+
+// Evento Step do jogador
+// Controla a movimentação e atualiza o sprite dinamicamente
+var hor = keyboard_check(ord("D")) + keyboard_check(vk_right) - keyboard_check(ord("A")) - keyboard_check(vk_left);
+var ver = keyboard_check(ord("S")) + keyboard_check(vk_down) - keyboard_check(ord("W")) - keyboard_check(vk_up);
+
+if (hor != 0 || ver != 0) {
+    var dir = point_direction(0, 0, hor, ver);
+    x += lengthdir_x(speed, dir);
+    y += lengthdir_y(speed, dir);
+    action = "Walk";
+    scrCharLookAt(dir);
+} else {
+    action = "Idle";
+}
+
+// Atualiza o sprite dinamicamente
+var sprite_name = "sprPlayer" + action + face;
+var sprite_index_temp = asset_get_index(sprite_name);
+if (sprite_index_temp != -1) {
+    sprite_index = sprite_index_temp;
+} else {
+    show_debug_message("Sprite não encontrado: " + sprite_name);
+}
+
+// Controla a animação
+if (action == "Idle") {
+    image_speed = 0;
+    image_index = 0;
+} else if (action == "Walk") {
+    image_speed = 0.2;
+}
+
+// ==============================
+// Script: scrCharLookAt
+// ==============================
+
+// Define a direção (face) com base no ângulo de movimento
+function scrCharLookAt(dir) {
+    if (dir < 22.5 || dir >= 337.5) {
+        face = "R";
+    } else if (dir >= 22.5 && dir < 67.5) {
+        face = "DR";
+    } else if (dir >= 67.5 && dir < 112.5) {
+        face = "D";
+    } else if (dir >= 112.5 && dir < 157.5) {
+        face = "DL";
+    } else if (dir >= 157.5 && dir < 202.5) {
+        face = "L";
+    } else if (dir >= 202.5 && dir < 247.5) {
+        face = "UL";
+    } else if (dir >= 247.5 && dir < 292.5) {
+        face = "U";
+    } else if (dir >= 292.5 && dir < 337.5) {
+        face = "UR";
+    }
+}
