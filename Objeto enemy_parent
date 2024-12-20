@@ -1,0 +1,27 @@
+// Evento Create
+// Inicializa as variáveis gerais do inimigo
+life = 3;       // Vida do inimigo
+damage = 1;     // Dano causado ao jogador
+speed = 1.5;    // Velocidade de movimento
+target = obj_asterous; // Alvo padrão (o jogador)
+
+// Evento Step
+// Movimenta o inimigo em direção ao jogador
+if (instance_exists(target)) {
+    var dir = point_direction(x, y, target.x, target.y);
+    x += lengthdir_x(speed, dir);
+    y += lengthdir_y(speed, dir);
+}
+
+// Destroi o inimigo se sua vida chegar a 0
+if (life <= 0) {
+    instance_destroy();
+}
+
+// Evento Collision com obj_asterous
+// Interação com o jogador ao colidir
+if (!obj_asterous.invulnerable) {
+    obj_asterous.current_life -= damage;
+    obj_asterous.invulnerable = true;
+    obj_asterous.alarm[0] = 30;
+}
