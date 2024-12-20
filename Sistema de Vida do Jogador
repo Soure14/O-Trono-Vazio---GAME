@@ -1,0 +1,36 @@
+// Evento Create
+// Inicializa as variáveis de vida do jogador
+max_life = 3;       // Vida máxima
+current_life = max_life; // Vida atual
+invulnerable = false; // Estado de invulnerabilidade inicial
+
+// Evento Step
+// Lida com a redução de vida ao colidir com inimigos
+if (place_meeting(x, y, obj_enemy) && !invulnerable) {
+    current_life -= 1;
+    if (current_life > 0) {
+        invulnerable = true;
+        alarm[0] = 30; // Invulnerabilidade por 30 frames
+    } else {
+        instance_destroy(); // Destroi o jogador (Game Over)
+    }
+}
+
+// Evento Alarm 0
+// Finaliza a invulnerabilidade
+invulnerable = false;
+
+// Evento Draw GUI
+// Desenha os corações na tela
+var heart_sprite = spr_heart;
+var start_x = 20;
+var start_y = 20;
+var spacing = 40;
+
+for (var i = 0; i < max_life; i++) {
+    if (i < current_life) {
+        draw_sprite(heart_sprite, 0, start_x + i * spacing, start_y);
+    } else {
+        draw_sprite_ext(heart_sprite, 0, start_x + i * spacing, start_y, 1, 1, 0, c_black, 0.5);
+    }
+}
